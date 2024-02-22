@@ -1,42 +1,40 @@
-import { Router } from "express";
-import { ProductManager } from "../models/productManager.js";
+const express = require("express");
+const uuid4 = require("uuid4");
 
+const { Router } = express;
+const routerProd = new Router();
 
-const productManager = new ProductManager('./cart.json')
+const CartManager = require("../cartManager");
+const cartManager = new CartManager("./src/cart.json");
 
-const routerCart = Router()
-
-routerCart.get('/:cid', async (req,res) => {
-    const {cid} = req.params
-    const prod = await ProductManager.getProductsById(cid)
-
-    if (prod) {
-        res.status(200).send(prod)
-    } else{
-        res.status(404).send("Producto no encontrado")
+routerProd.get("/cart/:cid", async (req, res) => {
+    const { cid } = req.params;
+    try {
+        const response = await cartManager.getCartProducts(cid);
+        res.json(response);
+    } catch (error) {
+        res.send("Error para enviar los productos");
     }
-})
+});
 
-routerCart.post('/:cid', async (req,res) => {
-    const {cid} = req.params
-    const conf = await productManager.updateProduct(cid, req.body)
-
-    if (conf) {
-        res.status(200).send("Producto agregado")
-    } else{
-        res.status(404).send("Producto no encontrado")
+routerProd.post("/cart", async (req, res) => {
+    try {
+        const response = await cartManager.newCart();
+        return res.json(response);
+    } catch (error) {
+        console.log(error);
+        res.send("Error para crear el carrito");
     }
-})
+});
 
-routerCart.delete('/:cid', async (req,res) => {
-    const {cid} = req.params
-    const conf = await productManager.deleteProduct(cid)
-
-    if (conf) {
-        res.status(200).send("Producto eliminado correctamente")
-    } else{
-        res.status(404).send("Producto no encontrado")
+routerProd.post("/cart/:cid/:pid", async (req, res) => {
+    const { cid, pid } = req.params;
+    try {
+        await cartManager.addProductCart(cid, pid);
+        res.send("Producto agregado");
+    } catch (error) {
+        res.send("Error para guardar el producto");
     }
-})
+});
 
-export default routerCart
+module.exports = routerProd;

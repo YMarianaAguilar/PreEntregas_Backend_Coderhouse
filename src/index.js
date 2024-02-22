@@ -1,21 +1,20 @@
-import  express  from "express";
-import routerProd from "./routes/products.routes.js";
-import routerCart from "./routes/cart.routes.js";
-import {__dirname} from './path.js'
-import path from "./path.js";
+const express = require("express");
 
-const PORT = 8080
-const app = express()
+const productsRoutes = require("./routes/products.routes.js");
+const cartRoutes = require("./routes/cart.routes.js");
 
-//Middlewares
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
+const app = express();
 
-//Routes
-app.use('/api/products', routerProd);
-app.use('api/cart', routerCart);
-app.use('/static', express.static(path.join(__dirname, 'public')))
+app.use(express.json());
 
-app.listen(PORT, () => {
-    console.log(`Server on port ${PORT}`)
-})
+app.use("/api", productsRoutes);
+app.use("/api", cartRoutes);
+
+app.get("/", (req, res) => {
+    res.send("Mueblería Victor");
+});
+
+app.listen(8080, () => {
+    console.log("Server run on port 8080");
+});
+
