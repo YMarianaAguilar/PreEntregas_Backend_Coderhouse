@@ -1,0 +1,93 @@
+<div>
+    <h1>
+        Juegos de PlayStation
+    </h1>
+
+    <div class="container">
+        <div class="row products-container">
+            {{#each products}}
+            <div class="card" style="width: 20rem;">
+                <img src="..." class="card-img-top" alt="imagen">
+                <div class="card-body">
+                    <h5 class="card-title">{{this.name}}</h5>
+                    <p class="card-text">{{this.description}}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{this.price}}</li>
+                </ul>
+            </div>
+            {{/each}}
+        </div>
+        <div class="container mt-6 w-50">
+            <form>
+                <div class="mb-3">
+                    <label for="furniture-name" class="form-label">Nombre</label>
+                    <input type="text" name="name" class="form-control" id="furniture-name"
+                        aria-describedby="Nombre del Mueble">
+                </div>
+                <div class="mb-3">
+                    <label for="furniture-description" class="form-label">Descripción</label>
+                    <input type="text" name="description" class="form-control" id="furniture-description"
+                        aria-describedby="Descripción del Mueble">
+                </div>
+                <div class="mb-3">
+                    <label for="furniture-price" class="form-label">Precio</label>
+                    <input type="text" name="price" class="form-control" id="furniture-price"
+                        aria-describedby="Precio del Mueble">
+                </div>
+                <div class="mb-3">
+                    <label for="furniture-stock" class="form-label">Stock</label>
+                    <input type="number" name="stock" min="1" class="form-control" id="furniture-stock"
+                        aria-describedby="Stock del Modelo del Mueble">
+                </div>
+                <div class="mb-3">
+                    <label for="furniture-code" class="form-label">Code</label>
+                    <input type="text" name="code" class="form-control" id="furniture-code"
+                        aria-describedby="Codigo del Mueble">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const game = {
+            name: e.target['name'].value,
+            description: e.target['description'].value,
+            price: e.target['price'].value,
+            stock: e.target['stock'].value,
+            code: e.target['code'].value,
+        };
+        socket.emit('new-product', game);
+    })
+
+    function updateProducts(products) {
+        const productsContainer = document.querySelector('.products-container');
+        productsContainer.innerHTML = '';
+
+        products.forEach((product) => {
+            productsContainer.innerHTML += `
+                      <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">${product.name}</h5>
+                    <p class="card-text">${product.description}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">${product.price}</li>
+                </ul>
+            </div>
+      `;
+        });
+    }
+    socket.on('update-products', updateProducts);
+
+</script>

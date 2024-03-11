@@ -1,0 +1,27 @@
+<div>
+    <h1>
+        MUEBLERÍA VICTOR
+    </h1>
+    <div class="container">
+        <div class="row products-container">
+            {{#each products}}
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{this.name}}</h5>
+                    <p class="card-text">{{this.description}}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{this.price}}</li>
+                </ul>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+<div class="container mt-6 w-50">
+
+</div>
+<script>
+
+</script>

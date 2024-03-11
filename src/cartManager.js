@@ -46,12 +46,11 @@ class CartManager {
             const cartProducts = await this.getCartProducts(cart_id);
 
             const existingProductIndex = cartProducts.findIndex(
-                (product) => product.id == product_id   // product.id debe ser usado.
+                (product) => product.product.id == product.id   // product.id debe ser usado.
             );
 
             if (existingProductIndex !== -1) {
-                cartProducts[existingProductIndex].quantity =
-                    cartProducts[existingProductIndex].quantity + 1;
+                cartProducts[existingProductIndex].quantity += 1;
             } else {
                 cartProducts.push({ product_id, quantity: 1 });
             }
